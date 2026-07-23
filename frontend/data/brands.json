@@ -1,0 +1,13 @@
+[
+  { "id": "b1", "slug": "bmw", "name": "BMW", "country": "Germany", "founded": 1916, "logo": "/images/brands/bmw.png", "description": "Precision German engineering meeting sheer driving pleasure." },
+  { "id": "b2", "slug": "mercedes-benz", "name": "Mercedes-Benz", "country": "Germany", "founded": 1926, "logo": "/images/brands/mercedes-benz.png", "description": "The inventor of the automobile, redefined for the modern age." },
+  { "id": "b3", "slug": "audi", "name": "Audi", "country": "Germany", "founded": 1909, "logo": "/images/brands/audi.png", "description": "Vorsprung durch Technik — progress through technology." },
+  { "id": "b4", "slug": "porsche", "name": "Porsche", "country": "Germany", "founded": 1931, "logo": "/images/brands/porsche.png", "description": "There is no substitute." },
+  { "id": "b5", "slug": "ferrari", "name": "Ferrari", "country": "Italy", "founded": 1939, "logo": "/images/brands/ferrari.png", "description": "The prancing horse — Italian passion engineered for the track and road." },
+  { "id": "b6", "slug": "lamborghini", "name": "Lamborghini", "country": "Italy", "founded": 1963, "logo": "/images/brands/lamborghini.png", "description": "Unmistakable design, uncompromising performance." },
+  { "id": "b7", "slug": "bentley", "name": "Bentley", "country": "United Kingdom", "founded": 1919, "logo": "/images/brands/bentley.png", "description": "Handcrafted British luxury, effortless power." },
+  { "id": "b8", "slug": "rolls-royce", "name": "Rolls-Royce", "country": "United Kingdom", "founded": 1904, "logo": "/images/brands/rolls-royce.png", "description": "The pinnacle of automotive luxury since 1904." },
+  { "id": "b9", "slug": "mclaren", "name": "McLaren", "country": "United Kingdom", "founded": 1963, "logo": "/images/brands/mclaren.png", "description": "Born from racing, built for the road." },
+  { "id": "b10", "slug": "tesla", "name": "Tesla", "country": "United States", "founded": 2003, "logo": "/images/brands/tesla.png", "description": "Accelerating the world's transition to sustainable performance." },
+  { "id": "b11", "slug": "aston-martin", "name": "Aston Martin", "country": "United Kingdom", "founded": 1913, "logo": "/images/brands/aston-martin.png", "description": "Power, beauty, and soul — British grand touring at its finest." }
+]

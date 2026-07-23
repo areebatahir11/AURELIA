@@ -1,0 +1,8 @@
+[
+  { "value": "sedan", "label": "Sedan" },
+  { "value": "coupe", "label": "Coupe" },
+  { "value": "suv", "label": "SUV" },
+  { "value": "convertible", "label": "Convertible" },
+  { "value": "hypercar", "label": "Hypercar" },
+  { "value": "electric", "label": "Electric" }
+]
