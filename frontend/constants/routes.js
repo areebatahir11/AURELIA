@@ -1,0 +1,18 @@
+export const ROUTES = {
+  HOME: "/",
+  COLLECTION: "/collection",
+  VEHICLE_DETAIL: (slug) => `/collection/${slug}`,
+  BRANDS: "/brands",
+  BRAND_DETAIL: (slug) => `/brands/${slug}`,
+  ABOUT: "/about",
+  CONTACT: "/contact",
+  WISHLIST: "/wishlist",
+  COMPARE: "/compare",
+  CART: "/cart",
+  CHECKOUT: "/checkout",
+  ORDERS: "/account/orders",
+  ACCOUNT: "/account",
+  LOGIN: "/auth/login",
+  SIGNUP: "/auth/signup",
+  AI_CONCIERGE: "/concierge",
+};
