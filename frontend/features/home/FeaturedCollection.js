@@ -1,6 +1,6 @@
 import { vehicleService } from "@/services/vehicle.service";
 import SectionHeader from "@/components/ui/SectionHeader";
-import VehicleCard from "./VehicleCard";
+import VehicleCard from "@/features/vehicles/VehicleCard";
 
 export default async function FeaturedCollection() {
   const featuredRefs = await vehicleService.getFeatured();
