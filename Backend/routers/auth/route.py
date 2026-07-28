@@ -1,0 +1,49 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from core.database import users_collection
+from core.deps import get_current_user
+from core.security import create_access_token, hash_password, verify_password
+from models.user import TokenResponse, UserLogin, UserOut, UserSignup
+from utils.serializers import serialize_doc
+
+router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+@router.post("/signup", response_model=TokenResponse)
+async def signup(payload: UserSignup):
+    existing = await users_collection.find_one({"email": payload.email})
+    if existing:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    user_doc = {
+        "name": payload.name,
+        "email": payload.email,
+        "hashedPassword": hash_password(payload.password),
+        "role": "customer",
+        "wishlist": [],
+    }
+    result = await users_collection.insert_one(user_doc)
+    user_doc["_id"] = result.inserted_id
+
+    token = create_access_token({"sub": str(result.inserted_id)})
+    user_out = serialize_doc(user_doc)
+    user_out.pop("hashedPassword", None)
+    return TokenResponse(token=token, user=UserOut(**user_out))
+
+
+@router.post("/login", response_model=TokenResponse)
+async def login(payload: UserLogin):
+    user = await users_collection.find_one({"email": payload.email})
+    if not user or not verify_password(payload.password, user.get("hashedPassword", "")):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
+    token = create_access_token({"sub": str(user["_id"])})
+    user_out = serialize_doc(user)
+    user_out.pop("hashedPassword", None)
+    return TokenResponse(token=token, user=UserOut(**user_out))
+
+
+@router.get("/me", response_model=UserOut)
+async def get_me(current_user: dict = Depends(get_current_user)):
+    current_user.pop("hashedPassword", None)
+    return UserOut(**current_user)
