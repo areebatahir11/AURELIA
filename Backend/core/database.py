@@ -8,6 +8,7 @@ users_collection = db["users"]
 brands_collection = db["brands"]
 vehicles_collection = db["vehicles"]
 orders_collection = db["orders"]
+testimonials_collection = db["testimonials"]
 
 
 async def ping_database():

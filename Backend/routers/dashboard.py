@@ -1,13 +1,18 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from core.database import orders_collection, vehicles_collection
-from core.deps import require_admin
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
+# NOTE: intentionally public, not admin-only — the homepage's marketing "Stats" section
+# (features/home/Stats.js) reads from this same endpoint. Only aggregate counts/totals are
+# exposed here, never individual order or customer records, so this is a reasonable trade-off.
+# If you want the admin dashboard to show something more sensitive later, add a separate
+# admin-only route rather than locking this one back down.
+
 
 @router.get("/stats")
-async def get_stats(admin=Depends(require_admin)):
+async def get_stats():
     total_vehicles = await vehicles_collection.count_documents({})
     active_listings = await vehicles_collection.count_documents({"status": "available"})
     total_orders = await orders_collection.count_documents({})

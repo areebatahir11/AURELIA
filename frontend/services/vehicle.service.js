@@ -33,6 +33,13 @@ export const vehicleService = {
     return apiClient.get(`/vehicles`, { params: { brand: brandSlug } });
   },
 
+  async getByIds(vehicleIds) {
+    if (API_CONFIG.useMockData) {
+      return { data: carsData.filter((car) => vehicleIds.includes(car.id)) };
+    }
+    return apiClient.post("/vehicles/by-ids", { vehicleIds });
+  },
+
   async search(query) {
     if (API_CONFIG.useMockData) {
       const lower = query.toLowerCase();
@@ -44,5 +51,19 @@ export const vehicleService = {
       };
     }
     return apiClient.get("/vehicles/search", { params: { q: query } });
+  },
+
+  // --- Admin (always hits the real backend) ---
+
+  async create(payload) {
+    return apiClient.post("/vehicles", payload);
+  },
+
+  async update(vehicleId, payload) {
+    return apiClient.patch(`/vehicles/${vehicleId}`, payload);
+  },
+
+  async remove(vehicleId) {
+    return apiClient.delete(`/vehicles/${vehicleId}`);
   },
 };

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from core.config import settings
 from core.database import ping_database
-from routers import ai, auth, brands, dashboard, orders, vehicles, wishlist
+from routers import ai, auth, brands, dashboard, orders, testimonials, vehicles, wishlist
 
 
 @asynccontextmanager
@@ -33,6 +33,7 @@ app.include_router(wishlist.router, prefix=API_PREFIX)
 app.include_router(orders.router, prefix=API_PREFIX)
 app.include_router(ai.router, prefix=API_PREFIX)
 app.include_router(dashboard.router, prefix=API_PREFIX)
+app.include_router(testimonials.router, prefix=API_PREFIX)
 
 
 @app.get("/")

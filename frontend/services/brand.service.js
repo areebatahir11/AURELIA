@@ -16,4 +16,18 @@ export const brandService = {
     }
     return apiClient.get(`/brands/${slug}`);
   },
+
+  // --- Admin (always hits the real backend — mock data has no write path) ---
+
+  async create(payload) {
+    return apiClient.post("/brands", payload);
+  },
+
+  async update(brandId, payload) {
+    return apiClient.patch(`/brands/${brandId}`, payload);
+  },
+
+  async remove(brandId) {
+    return apiClient.delete(`/brands/${brandId}`);
+  },
 };

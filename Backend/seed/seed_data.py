@@ -7,7 +7,7 @@ see in the browser doesn't change the moment you flip useMockData to false.
 
 import asyncio
 
-from core.database import brands_collection, users_collection, vehicles_collection
+from core.database import brands_collection, testimonials_collection, users_collection, vehicles_collection
 from core.security import hash_password
 
 BRANDS = [
@@ -34,6 +34,13 @@ VEHICLES = [
 ]
 
 
+TESTIMONIALS = [
+    {"name": "Hassan Raza", "title": "Entrepreneur, Lahore", "quote": "Aurelia made acquiring a Bentley feel less like a transaction and more like an occasion. Impeccable.", "rating": 5},
+    {"name": "Fatima Ilyas", "title": "Architect, Islamabad", "quote": "The concierge team understood exactly what I wanted before I finished describing it.", "rating": 5},
+    {"name": "Omar Sheikh", "title": "Collector", "quote": "I've bought cars across three continents. Aurelia's process is the most refined I've experienced.", "rating": 5},
+]
+
+
 async def seed():
     if await brands_collection.count_documents({}) == 0:
         await brands_collection.insert_many(BRANDS)
@@ -47,13 +54,19 @@ async def seed():
     else:
         print("Vehicles already seeded, skipping")
 
+    if await testimonials_collection.count_documents({}) == 0:
+        await testimonials_collection.insert_many(TESTIMONIALS)
+        print(f"Inserted {len(TESTIMONIALS)} testimonials")
+    else:
+        print("Testimonials already seeded, skipping")
+
     admin_email = "admin@aurelia.com"
     if await users_collection.find_one({"email": admin_email}) is None:
         await users_collection.insert_one(
             {
                 "name": "Aurelia Admin",
                 "email": admin_email,
-                "hashedPassword": hash_password("ChangeMe123!"),  # change this immediately after first login
+                "hashedPassword": hash_password("ChangeMe123!"),  
                 "role": "admin",
                 "wishlist": [],
             }

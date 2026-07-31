@@ -23,4 +23,14 @@ export const orderService = {
     }
     return apiClient.get(`/orders/${orderId}`);
   },
+
+  // --- Admin (always hits the real backend) ---
+
+  async getAllAdmin() {
+    return apiClient.get("/orders/admin/all");
+  },
+
+  async updateStatus(orderId, status) {
+    return apiClient.patch(`/orders/${orderId}/status`, { status });
+  },
 };
