@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section className="relative flex h-screen items-end overflow-hidden">
       <video autoPlay muted loop playsInline className="absolute inset-0 h-full w-full object-cover">
-        <source src="/videos/hero-drift.mp4" type="video/mp4" />
+        <source src="/drift.mp4" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-void/60" />

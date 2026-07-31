@@ -1,3 +1,4 @@
+// context/AuthContext.js
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
@@ -31,13 +32,22 @@ export function AuthProvider({ children }) {
     return res.data.user;
   }, []);
 
+  const signup = useCallback(async (payload) => {
+    const res = await authService.signup(payload);
+    localStorage.setItem("aurelia_token", res.data.token);
+    setUser(res.data.user);
+    return res.data.user;
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem("aurelia_token");
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, isAuthenticated: !!user, login, signup, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

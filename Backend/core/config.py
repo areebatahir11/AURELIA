@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+#core/config.py
 
 class Settings(BaseSettings):
     # --- Database ---
