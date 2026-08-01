@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 const WishlistContext = createContext(undefined);
 const STORAGE_KEY = "aurelia_wishlist";
@@ -12,9 +18,12 @@ export function WishlistProvider({ children }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setWishlist(JSON.parse(stored));
+
+      if (stored) {
+        setWishlist(JSON.parse(stored));
+      }
     } catch (error) {
-      console.error("Failed to hydrate wishlist:", error);
+      console.error("Failed to load wishlist:", error);
     } finally {
       setIsHydrated(true);
     }
@@ -27,7 +36,9 @@ export function WishlistProvider({ children }) {
   }, [wishlist, isHydrated]);
 
   const addToWishlist = useCallback((vehicleId) => {
-    setWishlist((prev) => (prev.includes(vehicleId) ? prev : [...prev, vehicleId]));
+    setWishlist((prev) =>
+      prev.includes(vehicleId) ? prev : [...prev, vehicleId],
+    );
   }, []);
 
   const removeFromWishlist = useCallback((vehicleId) => {
@@ -36,15 +47,26 @@ export function WishlistProvider({ children }) {
 
   const toggleWishlist = useCallback((vehicleId) => {
     setWishlist((prev) =>
-      prev.includes(vehicleId) ? prev.filter((id) => id !== vehicleId) : [...prev, vehicleId]
+      prev.includes(vehicleId)
+        ? prev.filter((id) => id !== vehicleId)
+        : [...prev, vehicleId],
     );
   }, []);
 
-  const isWishlisted = useCallback((vehicleId) => wishlist.includes(vehicleId), [wishlist]);
+  const isWishlisted = useCallback(
+    (vehicleId) => wishlist.includes(vehicleId),
+    [wishlist],
+  );
 
   return (
     <WishlistContext.Provider
-      value={{ wishlist, addToWishlist, removeFromWishlist, toggleWishlist, isWishlisted }}
+      value={{
+        wishlist,
+        addToWishlist,
+        removeFromWishlist,
+        toggleWishlist,
+        isWishlisted,
+      }}
     >
       {children}
     </WishlistContext.Provider>
@@ -54,7 +76,9 @@ export function WishlistProvider({ children }) {
 export function useWishlistContext() {
   const context = useContext(WishlistContext);
   if (context === undefined) {
-    throw new Error("useWishlistContext must be used within a WishlistProvider");
+    throw new Error(
+      "useWishlistContext must be used within a WishlistProvider",
+    );
   }
   return context;
 }

@@ -1,4 +1,3 @@
-// context/AuthContext.js
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
@@ -11,18 +10,36 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("aurelia_token") : null;
-    if (!token) {
-      setIsLoading(false);
-      return;
+    let cancelled = false;
+
+    async function initAuth() {
+      try {
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("aurelia_token") : null;
+
+        if (!token) {
+          if (!cancelled) setIsLoading(false);
+          return;
+        }
+
+        const res = await authService.getCurrentUser();
+        if (!cancelled) {
+          setUser(res.data);
+          setIsLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          localStorage.removeItem("aurelia_token");
+          setIsLoading(false);
+        }
+      }
     }
-    authService
-      .getCurrentUser()
-      .then((res) => setUser(res.data))
-      .catch(() => {
-        localStorage.removeItem("aurelia_token");
-      })
-      .finally(() => setIsLoading(false));
+
+    initAuth();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = useCallback(async (credentials) => {

@@ -1,32 +1,30 @@
-// app/(customer)/login/page.js
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
+import Button from "@/components/ui/Button";
 
 export default function CustomerLoginPage() {
   const { login } = useAuthContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
     setError("");
     setIsSubmitting(true);
 
     try {
       const user = await login({ email, password });
-
-      if (user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/");
-      }
+      router.push(user.role === "admin" ? "/admin" : redirectTo);
     } catch {
       setError("Invalid email or password.");
       setIsSubmitting(false);
@@ -34,10 +32,10 @@ export default function CustomerLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6 bg-void">
+    <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <p className="mb-2 text-center font-mono text-xs uppercase tracking-[0.3em] text-gold">
-          Customer Access
+          Welcome Back
         </p>
         <h1 className="mb-10 text-center font-display text-3xl text-ivory">AURELIA</h1>
 
@@ -50,9 +48,8 @@ export default function CustomerLoginPage() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory placeholder-graphite focus:border-gold focus:outline-none"
-              placeholder="you@example.com"
+              onChange={(event) => setEmail(event.target.value)}
+              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory focus:border-gold focus:outline-none"
             />
           </div>
 
@@ -64,28 +61,23 @@ export default function CustomerLoginPage() {
               type="password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory placeholder-graphite focus:border-gold focus:outline-none"
-              placeholder="••••••••"
+              onChange={(event) => setPassword(event.target.value)}
+              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory focus:border-gold focus:outline-none"
             />
           </div>
 
           {error && <p className="font-body text-xs text-red-400">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full border border-gold bg-gold/10 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-goldBright transition-colors hover:bg-gold/20 disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign in"}
-          </button>
+          </Button>
         </form>
 
         <p className="mt-6 text-center font-body text-xs text-graphite">
           Don&apos;t have an account?{" "}
-          <a href="/signup" className="text-goldBright underline hover:text-gold">
+          <Link href={`/signup?redirect=${encodeURIComponent(redirectTo)}`} className="text-gold underline hover:text-goldBright">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

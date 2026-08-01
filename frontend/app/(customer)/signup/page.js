@@ -1,13 +1,16 @@
-// app/(customer)/signup/page.js
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
+import Button from "@/components/ui/Button";
 
 export default function CustomerSignupPage() {
   const { signup } = useAuthContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,22 +18,22 @@ export default function CustomerSignupPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
     setError("");
     setIsSubmitting(true);
 
     try {
       await signup({ name, email, password });
-      router.push("/");
+      router.push(redirectTo);
     } catch (err) {
-      setError(err.message || "Signup failed");
+      setError(err?.response?.data?.detail || "Could not create your account.");
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6 bg-void">
+    <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <p className="mb-2 text-center font-mono text-xs uppercase tracking-[0.3em] text-gold">
           Create Account
@@ -46,9 +49,8 @@ export default function CustomerSignupPage() {
               type="text"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory placeholder-graphite focus:border-gold focus:outline-none"
-              placeholder="John Doe"
+              onChange={(event) => setName(event.target.value)}
+              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory focus:border-gold focus:outline-none"
             />
           </div>
 
@@ -60,9 +62,8 @@ export default function CustomerSignupPage() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory placeholder-graphite focus:border-gold focus:outline-none"
-              placeholder="you@example.com"
+              onChange={(event) => setEmail(event.target.value)}
+              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory focus:border-gold focus:outline-none"
             />
           </div>
 
@@ -73,29 +74,25 @@ export default function CustomerSignupPage() {
             <input
               type="password"
               required
+              minLength={8}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory placeholder-graphite focus:border-gold focus:outline-none"
-              placeholder="••••••••"
+              onChange={(event) => setPassword(event.target.value)}
+              className="w-full border border-hairline bg-transparent px-4 py-3 font-body text-sm text-ivory focus:border-gold focus:outline-none"
             />
           </div>
 
           {error && <p className="font-body text-xs text-red-400">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full border border-gold bg-gold/10 px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-goldBright transition-colors hover:bg-gold/20 disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Sign up"}
-          </button>
+          </Button>
         </form>
 
         <p className="mt-6 text-center font-body text-xs text-graphite">
           Already have an account?{" "}
-          <a href="/login" className="text-goldBright underline hover:text-gold">
+          <Link href={`/login?redirect=${encodeURIComponent(redirectTo)}`} className="text-gold underline hover:text-goldBright">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

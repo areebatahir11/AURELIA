@@ -1,3 +1,4 @@
+//auth.service.js inside services
 import apiClient from "@/lib/axios";
 import { API_CONFIG } from "@/config/api";
 

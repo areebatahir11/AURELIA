@@ -1,4 +1,5 @@
 export const NAV_LINKS = [
+  { label:"Home", href: "/" },
   { label: "Collection", href: "/collection" },
   { label: "Brands", href: "/brands" },
   { label: "Concierge", href: "/concierge" },
@@ -20,6 +21,5 @@ export const FOOTER_LINKS = {
   Company: [
     { label: "About Aurelia", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Careers", href: "/careers" },
   ],
 };
