@@ -28,3 +28,4 @@ class OrderOut(BaseModel):
     notes: str = ""
     status: str = "Pending"
     createdAt: datetime = Field(default_factory=datetime.utcnow)
+    expiresAt: datetime | None = None

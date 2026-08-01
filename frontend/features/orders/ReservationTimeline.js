@@ -3,7 +3,8 @@
 const TIMELINE = ["Pending", "Confirmed", "In Process", "Completed"];
 
 export default function ReservationTimeline({ currentStatus }) {
-  const currentIndex = TIMELINE.indexOf(currentStatus);
+  const rawIndex = TIMELINE.indexOf(currentStatus);
+  const currentIndex = rawIndex === -1 ? 0 : rawIndex;
 
   return (
     <div className="space-y-5">

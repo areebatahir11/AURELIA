@@ -24,6 +24,10 @@ export const orderService = {
     return apiClient.get(`/orders/${orderId}`);
   },
 
+  async cancel(orderId) {
+    return apiClient.post(`/orders/${orderId}/cancel`);
+  },
+
   // --- Admin (always hits the real backend) ---
 
   async getAllAdmin() {

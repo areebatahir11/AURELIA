@@ -5,6 +5,7 @@ import WhyAurelia from "@/features/home/whyaurelia";
 import Stats from "@/features/home/stats";
 import Testimonials from "@/features/home/testimonials";
 import CTA from "@/features/home/CTA";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Stats />
       <Testimonials />
       <CTA />
+      <Footer />
     </>
   );
 }

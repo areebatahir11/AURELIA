@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { orderService } from "@/services/order.service";
@@ -9,11 +9,31 @@ import Loader from "@/components/ui/Loader";
 import Button from "@/components/ui/Button";
 import EmptyState from "@/components/ui/EmptyState";
 import ReservationTimeline from "@/features/orders/ReservationTimeline";
+import ReservationCountdown from "@/components/ui/reservationCountdown";
 
 export default function AccountPage() {
   const { user, isLoading, isAuthenticated, logout } = useAuthContext();
   const router = useRouter();
   const [orders, setOrders] = useState(null);
+  const isRefreshingRef = useRef(false);
+
+  const loadOrders = useCallback(async () => {
+    const { data: myOrders } = await orderService.getAll();
+    const { data: allVehicles } = await vehicleService.getAll();
+    const enriched = myOrders.map((order) => ({
+      ...order,
+      vehicle: allVehicles.find((vehicle) => vehicle.id === order.vehicleId),
+    }));
+    setOrders(enriched);
+  }, []);
+
+  const handleAnyExpire = useCallback(() => {
+    if (isRefreshingRef.current) return;
+    isRefreshingRef.current = true;
+    loadOrders().finally(() => {
+      isRefreshingRef.current = false;
+    });
+  }, [loadOrders]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -24,22 +44,9 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-
-    async function loadOrders() {
-      const { data: myOrders } = await orderService.getAll();
-      console.log("MY ORDERS FROM API:", myOrders);
-      const { data: allVehicles } = await vehicleService.getAll();
-      const enriched = myOrders.map((order) => ({
-        ...order,
-        vehicle: allVehicles.find((vehicle) => vehicle.id === order.vehicleId),
-      }));
-      console.log("ENRICHED ORDERS:", enriched);
-      setOrders(enriched);
-    }
     loadOrders();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, loadOrders]);
 
-  console.log("STATE ORDERS:", orders);
   if (isLoading || !isAuthenticated) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -87,7 +94,6 @@ export default function AccountPage() {
                 className="border border-hairline bg-surface/30 p-6 transition-colors duration-300 hover:border-gold/40"
               >
                 <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-                  {/* Left Side */}
                   <div className="flex-1">
                     <p className="font-display text-2xl text-ivory">
                       {order.vehicle ? order.vehicle.name : "Vehicle"}
@@ -102,7 +108,6 @@ export default function AccountPage() {
                         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-graphite">
                           Submitted
                         </p>
-
                         <p className="mt-1 font-body text-sm text-ivory">
                           {new Date(order.createdAt).toLocaleDateString()}
                         </p>
@@ -112,7 +117,6 @@ export default function AccountPage() {
                         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-graphite">
                           Phone
                         </p>
-
                         <p className="mt-1 font-body text-sm text-ivory">
                           {order.contactPhone}
                         </p>
@@ -122,7 +126,6 @@ export default function AccountPage() {
                         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-graphite">
                           Email
                         </p>
-
                         <p className="mt-1 font-body text-sm text-ivory break-all">
                           {order.contactEmail}
                         </p>
@@ -133,22 +136,38 @@ export default function AccountPage() {
                           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-graphite">
                             Notes
                           </p>
-
                           <p className="mt-1 font-body text-sm text-ivory">
                             {order.notes}
                           </p>
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  {/* Right Side */}
+                    {order.status === "Pending" && (
+                      <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-hairline pt-6">
+                        <ReservationCountdown
+                          expiresAt={order.expiresAt}
+                          onExpire={handleAnyExpire}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={async () => {
+                            if (!confirm("Cancel this reservation?")) return;
+                            await orderService.cancel(order.id);
+                            loadOrders();
+                          }}
+                        >
+                          Cancel Reservation
+                        </Button>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="min-w-[240px] border-t border-hairline pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
                     <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-gold">
                       Reservation Progress
                     </p>
-
                     <ReservationTimeline currentStatus={order.status} />
                   </div>
                 </div>

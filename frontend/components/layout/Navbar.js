@@ -38,20 +38,17 @@ export default function Navbar() {
       <nav className="mx-auto flex h-15 max-w-7xl items-center justify-between px-6 lg:px-12">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo-removebg-preview.png"
+            src="/logoo.png"
             alt="Aurelia"
-            width={34}
+            width={62}
             height={34}
+            className="h-[34px] w-auto object-contain"
             priority
           />
 
           <div className="flex flex-col leading-none">
             <span className="font-display text-2xl tracking-[0.18em] text-ivory">
               AURELIA
-            </span>
-
-            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.28em] text-gold">
-              Reserved for the Exceptional
             </span>
           </div>
         </Link>

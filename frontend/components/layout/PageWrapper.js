@@ -6,7 +6,6 @@ export default function PageWrapper({ children }) {
     <div className="flex min-h-screen flex-col bg-void">
       <Navbar />
       <main className="flex-1">{children}</main>
-      <Footer />
     </div>
   );
 }

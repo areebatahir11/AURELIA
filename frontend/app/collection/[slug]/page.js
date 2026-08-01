@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { vehicleService } from "@/services/vehicle.service";
 import { formatCurrency, formatMileage } from "@/utils/formatters";
 import Badge from "@/components/ui/Badge";
 import SpecPlate from "@/features/vehicles/specplate";
 import VehicleActions from "@/features/vehicles/vehicleaction";
 import RelatedVehicles from "@/features/vehicles/related-vehicle";
+import { getFallbackImage } from "@/constants/vehicleimages";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -19,13 +21,26 @@ export default async function VehicleDetailPage({ params }) {
   if (!vehicle) {
     notFound();
   }
+const displayImage = vehicle.images?.[0] || getFallbackImage(vehicle.brand, vehicle.id?.length ?? 0);
 
   return (
     <div>
       <div className="px-6 pt-32 pb-24 lg:px-12">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-16 lg:grid-cols-2">
-          <div className="flex aspect-[4/3] items-center justify-center border border-hairline bg-surface font-mono text-xs text-graphite">
-            {vehicle.name} — image placeholder
+          <div className="relative aspect-[4/3] overflow-hidden border border-hairline bg-surface">
+            {displayImage ? (
+              <Image
+                src={displayImage}
+                alt={vehicle.name}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-graphite">
+                {vehicle.name} — image placeholder
+              </div>
+            )}
           </div>
 
           <div>
