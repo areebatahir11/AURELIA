@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { vehicleService } from "@/services/vehicle.service";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -8,7 +8,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import Loader from "@/components/ui/Loader";
 import VehicleCard from "@/features/vehicles/VehicleCard";
 
-export default function SearchPage() {
+function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
 
@@ -61,5 +61,21 @@ export default function SearchPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="px-6 pt-32 pb-24 lg:px-12">
+          <div className="mx-auto max-w-7xl flex justify-center">
+            <Loader />
+          </div>
+        </div>
+      }
+    >
+      <SearchResults />
+    </Suspense>
   );
 }
