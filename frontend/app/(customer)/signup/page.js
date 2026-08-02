@@ -90,3 +90,19 @@ function CustomerSignupForm() {
       <p className="mt-6 text-center font-body text-xs text-graphite">
         Already have an account?{" "}
         <Link href={`/login?redirect=${encodeURIComponent(redirectTo)}`} className="text-gold underline hover:text-goldBright">
+          Sign in
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+export default function CustomerSignupPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center px-6">
+      <Suspense fallback={<div className="text-ivory">Loading...</div>}>
+        <CustomerSignupForm />
+      </Suspense>
+    </div>
+  );
+}
