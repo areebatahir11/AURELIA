@@ -19,6 +19,10 @@ app = FastAPI(title="AURELIA API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin],
+    # Vercel preview deployments get a new random URL on every push (e.g. the
+    # "...-4wqdmpgkg-..." style hash) — a single fixed origin can never cover
+    # all of them, so this regex allows any preview URL under this project too.
+    allow_origin_regex=r"https://aurelia-f2lh.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
